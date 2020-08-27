@@ -1,7 +1,9 @@
 from flask import Flask
+from flask import jsonify
 import mysql.connector
 from mysql.connector import errorcode
 import os
+from ec2_metadata import ec2_metadata
 
 app = Flask(__name__)
 
@@ -18,9 +20,16 @@ def hello():
         conn = mysql.connector.connect(**rds_main)
         cursor = conn.cursor()  
         db_version = cursor.execute("SELECT VERSION()")
-        return db_version
         conn.close()
+        return jsonify(
+            database_version=db_version,
+            instance=ec2_metadata.instance_id,
+            region=ec2_metadata.region
+        )
     except mysql.connector.Error as err:
         print(err)
         raise ValueError("Some Error in DB Connection")
+    except TypeError as e:
+        print(e)
+        exit(1)
     
