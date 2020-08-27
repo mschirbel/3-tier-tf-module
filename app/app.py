@@ -1,6 +1,7 @@
 from flask import Flask
 import mysql.connector
 from mysql.connector import errorcode
+import os
 
 app = Flask(__name__)
 
@@ -8,14 +9,18 @@ app = Flask(__name__)
 def hello():
     rds_main = {
         'user': os.environ['RDS_USER'],
-        'pwrd': os.environ['RDS_PWRD'],
+        'password': os.environ['RDS_PWRD'],
         'host': os.environ['RDS_HOST'],
-        'base': os.environ['RDS_BASE'],
+        'database': os.environ['RDS_BASE'],
         'raise_on_warnings': True
     }
     try:
-        conn = mysql.connector(**rds_main)
-        return 'Connected with RDS!'
+        conn = mysql.connector.connect(**rds_main)
+        cursor = conn.cursor()  
+        db_version = cursor.execute("SELECT VERSION()")
+        return db_version
+        conn.close()
     except mysql.connector.Error as err:
-        return err
+        print(err)
+        raise ValueError("Some Error in DB Connection")
     
