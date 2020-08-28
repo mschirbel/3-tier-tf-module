@@ -19,13 +19,14 @@ def hello():
     try:
         conn = mysql.connector.connect(**rds_main)
         cursor = conn.cursor()  
-        db_version = cursor.execute("SELECT VERSION()")
-        conn.close()
+        cursor.execute("SELECT VERSION()")
+        db_version = cursor.fetchone()
         return jsonify(
             database_version=db_version,
             instance=ec2_metadata.instance_id,
             region=ec2_metadata.region
         )
+        conn.close()
     except mysql.connector.Error as err:
         print(err)
         raise ValueError("Some Error in DB Connection")
