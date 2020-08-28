@@ -24,19 +24,19 @@ systemctl restart amazon-ssm-agent.service
 # in a production environment you should use a different way to deploy your app
 # this is only a demonstration
 yum install python3 python3-pip git jq -y
-pip3 install ec2-metadata flask mysql-connector-python --user
+pip3 install ec2-metadata flask mysql-connector-python python-dotenv --user
 cd /opt
 git_sparse_clone "https://github.com/mschirbel/3-tier-tf-module" "3-tier-tf-module"
 cd /opt/3-tier-tf-module/app
+touch /opt/3-tier-tf-module/app/.env
 
 # env vars
-export FLASK_APP=app
-export FLASK_ENV=development
-export RDS_USER=${rds_username}
-export RDS_PWRD=$(aws ssm get-parameter --name "/rds/rds_connection_string" --with-decryption --region us-east-1 --output text --query Parameter.Value | jq '.PASS' | tr -d '"')
-export RDS_HOST=${rds_endpoint}
-#export RDS_HOST=$(aws ssm get-parameter --name "/rds/rds_connection_string" --with-decryption --region us-east-1 --output text --query Parameter.Value | jq '.URL' | tr -d '"' | cut -d ":" -f 1)
-export RDS_BASE=${rds_database}
-export UNIQUE_ID=${unique_id}
+echo "FLASK_APP=app" >> /opt/3-tier-tf-module/app/.env
+echo "FLASK_ENV=production" >> /opt/3-tier-tf-module/app/.env
+echo "RDS_USER=${rds_username}" >> /opt/3-tier-tf-module/app/.env
+echo "RDS_PWRD=${rds_password}" >> /opt/3-tier-tf-module/app/.env
+echo "RDS_HOST=${rds_endpoint}" >> /opt/3-tier-tf-module/app/.env
+echo "RDS_BASE=${rds_database}" >> /opt/3-tier-tf-module/app/.env
+echo "UNIQUE_ID=${unique_id}" >> /opt/3-tier-tf-module/app/.env
 
 python3 -m flask run --host=0.0.0.0 --port=80

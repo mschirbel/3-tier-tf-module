@@ -77,7 +77,7 @@ data "template_file" "user_data" {
     rds_username = module.db.this_db_instance_username,
     rds_endpoint = element(split(":", module.db.this_db_instance_endpoint), 0)
     rds_database = module.db.this_db_instance_name,
-    rds_password = module.db.this_db_instance_password,
+    rds_password = random_password.rds_password.result,
     unique_id    = var.unique_id
   }
 }

@@ -1,5 +1,5 @@
 variable "region" {
-  default = "us-east-1"
+  default = "sa-east-1"
 }
 
 ###### TAGS ########
@@ -39,7 +39,7 @@ variable "asg_capacity_timeout" {
 }
 
 variable "unique_id" {
-  default = "unique"
+  default = "bds72376YGYA"
 }
 
 ###### RDS ########
