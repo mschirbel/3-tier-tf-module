@@ -80,7 +80,7 @@ resource "aws_ssm_parameter" "rds_connection_string" {
         "PORT"     = module.db.this_db_instance_port,
         "DATABASE" = module.db.this_db_instance_name,
         "USER"     = module.db.this_db_instance_username,
-        "PASS"     = module.db.this_db_instance_password
+        "PASS"     = random_password.rds_password.result
     }
   )
   key_id = data.aws_kms_key.pass_kms_key.id
