@@ -1,7 +1,6 @@
 package test
 
 import (
-	"crypto/tls"
 	"fmt"
 	"testing"
 	"time"
@@ -28,7 +27,7 @@ func TestTerraformAlb(t *testing.T) {
 	awsRegion := aws.GetRandomStableRegion(t, nil, nil)
 
 	expectedResult := map[string]interface{}{
-		"database_version": mysqlVersion,
+		"database_version": fmt.Sprintf("[%s-log]", mysqlVersion),
 		"region": awsRegion,
 		"unique_id": uniqueID,
 	}
@@ -40,7 +39,11 @@ func TestTerraformAlb(t *testing.T) {
 		TerraformDir: "../infrastructure/",
 
 		// Variables to pass to our Terraform code using -var options
-		Vars: expectedResult,
+		Vars: map[string]interface{}{
+			"database_version": mysqlVersion,
+			"region": awsRegion,
+			"unique_id": uniqueID,
+		},
 	}
 
 	// At the end of the test, run `terraform destroy` to clean up any resources that were created
@@ -50,12 +53,12 @@ func TestTerraformAlb(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	// Run `terraform output` to get the value of an output variable
-	instanceURL := terraform.Output(t, terraformOptions, "alb-dns")
-
+	albDns := terraform.Output(t, terraformOptions, "alb-dns")
+	url := fmt.Sprintf("http://%s:80", albDns)
 	// It can take a minute or so for the Instance to boot up, so retry a few times
 	maxRetries := 30
 	timeBetweenRetries := 10 * time.Second
 
 	// Verify that we get back a 200 OK with the expected expectedResult
-	http_helper.HttpGetWithRetry(t, instanceURL, nil, 200, string(dataI), maxRetries, timeBetweenRetries)
+	http_helper.HttpGetWithRetry(t, url, nil, 200, string(dataI), maxRetries, timeBetweenRetries)
 }
