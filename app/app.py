@@ -26,7 +26,7 @@ def hello():
         return jsonify(
             database_version=db_version,
             region=ec2_metadata.region,
-            unique_id=os.getenv("UNIQUE_ID ")
+            unique_id=os.getenv("UNIQUE_ID")
         )
         conn.close()
     except mysql.connector.Error as err:
