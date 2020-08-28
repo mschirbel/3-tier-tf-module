@@ -38,6 +38,10 @@ variable "asg_capacity_timeout" {
   default = 0
 }
 
+variable "unique_id" {
+  default = "unique"
+}
+
 ###### RDS ########
 
 variable "rds_engine" {

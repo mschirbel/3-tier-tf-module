@@ -37,5 +37,6 @@ export RDS_PWRD=$(aws ssm get-parameter --name "/rds/rds_connection_string" --wi
 export RDS_HOST=${rds_endpoint}
 #export RDS_HOST=$(aws ssm get-parameter --name "/rds/rds_connection_string" --with-decryption --region us-east-1 --output text --query Parameter.Value | jq '.URL' | tr -d '"' | cut -d ":" -f 1)
 export RDS_BASE=${rds_database}
+export UNIQUE_ID=${unique_id}
 
 python3 -m flask run --host=0.0.0.0 --port=80
