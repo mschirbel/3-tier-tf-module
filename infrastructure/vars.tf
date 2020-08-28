@@ -48,7 +48,7 @@ variable "rds_engine" {
   default = "mysql"
 }
 
-variable "rds_engine_version" {
+variable "database_version" {
   default = "5.7.19"
 }
 

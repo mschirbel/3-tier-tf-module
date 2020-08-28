@@ -4,7 +4,7 @@ module "db" {
 
   identifier                          = join("-", [var.tag_name, "rds"])
   engine                              = var.rds_engine
-  engine_version                      = var.rds_engine_version
+  engine_version                      = var.database_version
   instance_class                      = var.rds_db_class
   allocated_storage                   = var.rds_allocated_storage
   name                                = var.tag_name
