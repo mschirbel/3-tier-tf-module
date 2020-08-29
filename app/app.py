@@ -22,7 +22,7 @@ def hello():
         conn = mysql.connector.connect(**rds_main)
         cursor = conn.cursor()  
         cursor.execute("SELECT VERSION()")
-        db_version = cursor.fetchone()
+        db_version = cursor.fetchone()[0]
         return jsonify(
             database_version=db_version,
             region=ec2_metadata.region,
