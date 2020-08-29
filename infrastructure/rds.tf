@@ -17,6 +17,7 @@ module "db" {
   backup_window                       = var.rds_backup_window
   create_monitoring_role              = false
   multi_az                            = var.rds_multi_az
+  skip_final_snapshot                 = true
 
   tags = merge(
     local.common_tags,
@@ -33,6 +34,9 @@ module "db" {
 
   # DB option group
   major_engine_version = var.rds_major_engine_version
+
+  # Define if creates an option group
+  create_db_option_group = false
 
   # Database Deletion Protection
   deletion_protection = false
