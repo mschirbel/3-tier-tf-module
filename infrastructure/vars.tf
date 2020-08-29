@@ -2,7 +2,7 @@ variable "region" {
   default = "sa-east-1"
 }
 
-###### TAGS ########
+###### TAGS ######
 
 variable "tag_name" {
   default = "newapp"
@@ -16,7 +16,23 @@ variable "tag_env"{
   default = "dev"
 }
 
-###### ASG ########
+###### VPC ######
+
+variable "main_vpc_cidr" {
+  default = "10.0.0.0/16"
+}
+
+variable "public_subnets_cidr" {
+  type    = list(string)
+  default = ["10.0.101.0/24", "10.0.102.0/24"]
+}
+
+variable "private_subnets_cidr" {
+  type    = list(string)
+  default = ["10.0.1.0/24", "10.0.2.0/24"]
+}
+
+###### ASG ######
 
 variable "ec2_instance_type" {
   default = "t2.micro"
@@ -42,7 +58,7 @@ variable "unique_id" {
   default = "bds72376YGYA"
 }
 
-###### RDS ########
+###### RDS ######
 
 variable "rds_engine" {
   default = "mysql"
