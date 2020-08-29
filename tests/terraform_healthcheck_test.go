@@ -1,10 +1,10 @@
 package test
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 	"time"
-	"encoding/json"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
 	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
@@ -19,20 +19,20 @@ func TestTerraformAlb(t *testing.T) {
 	// tests running in parallel
 	uniqueID := random.UniqueId()
 
-	// Give this EC2 Instance and other resources in the Terraform code a name with a unique ID so it doesn't clash
-	// with anything else in the AWS account.
+	// Defines the MySQL Version in the test
 	mysqlVersion := fmt.Sprintf("5.7.19")
 
 	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
 	awsRegion := aws.GetRandomStableRegion(t, nil, nil)
 
-	expectedResult := map[string]interface{}{
-		"database_version": fmt.Sprintf("[%s-log]", mysqlVersion),
-		"region": awsRegion,
-		"unique_id": uniqueID,
+	// Expected Result from the HTTP Request in the ALB
+	httpJSON := map[string]interface{}{
+		"database_version": fmt.Sprintf("%s-log", mysqlVersion),
+		"region":           awsRegion,
+		"unique_id":        uniqueID,
 	}
-
-	dataI, _ := json.Marshal(expectedResult)
+	// Format the Expected Result to JSON
+	expectedResult, _ := json.Marshal(httpJSON)
 
 	terraformOptions := &terraform.Options{
 		// The path to where our Terraform code is located
@@ -41,8 +41,8 @@ func TestTerraformAlb(t *testing.T) {
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
 			"database_version": mysqlVersion,
-			"region": awsRegion,
-			"unique_id": uniqueID,
+			"region":           awsRegion,
+			"unique_id":        uniqueID,
 		},
 	}
 
@@ -53,12 +53,14 @@ func TestTerraformAlb(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	// Run `terraform output` to get the value of an output variable
-	albDns := terraform.Output(t, terraformOptions, "alb-dns")
-	url := fmt.Sprintf("http://%s:80", albDns)
+	// Formats the alb dns to match HTTP request valid url
+	albDNS := terraform.Output(t, terraformOptions, "alb-dns")
+	URL := fmt.Sprintf("http://%s:80", albDNS)
+
 	// It can take a minute or so for the Instance to boot up, so retry a few times
 	maxRetries := 30
 	timeBetweenRetries := 10 * time.Second
 
 	// Verify that we get back a 200 OK with the expected expectedResult
-	http_helper.HttpGetWithRetry(t, url, nil, 200, string(dataI), maxRetries, timeBetweenRetries)
+	http_helper.HttpGetWithRetry(t, URL, nil, 200, string(expectedResult), maxRetries, timeBetweenRetries)
 }

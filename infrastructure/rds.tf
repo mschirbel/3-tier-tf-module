@@ -31,6 +31,9 @@ module "db" {
   # DB parameter group
   family = var.rds_parameter_group
 
+  # DB option group
+  major_engine_version = var.rds_major_engine_version
+
   # Database Deletion Protection
   deletion_protection = false
 
