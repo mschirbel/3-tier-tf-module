@@ -52,10 +52,6 @@ variable "database_version" {
   default = "5.7.19"
 }
 
-variable "rds_major_engine_version" {
-  default = "5.7"
-}
-
 variable "rds_username" {
   default = "username"
 }
