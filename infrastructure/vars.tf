@@ -32,6 +32,26 @@ variable "private_subnets_cidr" {
   default = ["10.0.1.0/24", "10.0.2.0/24"]
 }
 
+variable "enable_nat_gateway" {
+  type = bool
+  default = true
+}
+
+variable "single_nat_gateway" {
+  type = bool
+  default = true
+}
+
+variable "one_nat_gateway_per_az" {
+  type = bool
+  default = false
+}
+
+variable "create_igw" {
+  type = bool
+  default = true
+}
+
 ###### ASG ######
 
 variable "ec2_instance_type" {
@@ -58,6 +78,16 @@ variable "unique_id" {
   default = "bds72376YGYA"
 }
 
+variable "ebs_delete_on_termination" {
+  type = bool
+  default = true
+}
+
+variable "data_is_most_recent" {
+  type = bool
+  default = true
+}
+
 ###### RDS ######
 
 variable "rds_engine" {
@@ -76,7 +106,7 @@ variable "rds_username" {
   default = "username"
 }
 
-variable "rds_parameter_group" {
+variable "rds_family" {
   default = "mysql5.7"
 }
 
@@ -101,5 +131,35 @@ variable "rds_backup_window" {
 }
 
 variable "rds_multi_az" {
+  default = false
+}
+
+variable "rds_iam_database_authentication_enabled" {
+  type = bool
+  default = true
+}
+
+variable "rds_create_monitoring_role" {
+  type = bool
+  default = false
+}
+
+variable "rds_skip_final_snapshot" {
+  type = bool
+  default = true
+}
+
+variable "rds_create_db_option_group" {
+  type = bool
+  default = false
+}
+
+variable "rds_deletion_protection" {
+  type = bool
+  default = false
+}
+
+variable "rds_create_db_parameter_group" {
+  type = bool
   default = false
 }

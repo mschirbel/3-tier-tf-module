@@ -19,7 +19,7 @@ module "asg" {
       device_name           = "/dev/xvdz"
       volume_type           = "gp2"
       volume_size           = "30"
-      delete_on_termination = true
+      delete_on_termination = var.ebs_delete_on_termination
     },
   ]
 
@@ -43,7 +43,7 @@ module "asg" {
 }
 
 data "aws_ami" "amazon-linux-2" {
-    most_recent = true
+    most_recent = var.data_is_most_recent
     owners = ["amazon"]
     filter {
         name   = "owner-alias"

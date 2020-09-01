@@ -11,13 +11,13 @@ module "db" {
   username                            = var.rds_username
   password                            = random_password.rds_password.result
   port                                = var.rds_port
-  iam_database_authentication_enabled = true
+  iam_database_authentication_enabled = var.rds_iam_database_authentication_enabled
   vpc_security_group_ids              = [module.rds_sg.this_security_group_id]
   maintenance_window                  = var.rds_maintenance_window
   backup_window                       = var.rds_backup_window
-  create_monitoring_role              = false
+  create_monitoring_role              = var.rds_create_monitoring_role
   multi_az                            = var.rds_multi_az
-  skip_final_snapshot                 = true
+  skip_final_snapshot                 = var.rds_skip_final_snapshot
 
   tags = merge(
     local.common_tags,
@@ -30,27 +30,22 @@ module "db" {
   subnet_ids = module.vpc.private_subnets
 
   # DB parameter group
-  family = var.rds_parameter_group
+  family = var.rds_family
 
   # DB option group
   major_engine_version = var.rds_major_engine_version
 
   # Define if creates an option group
-  create_db_option_group = false
+  create_db_option_group = var.rds_create_db_option_group # https://github.com/terraform-providers/terraform-provider-aws/issues/4597
+  option_group_timeouts = {
+      delete: "60m"
+  }
 
   # Database Deletion Protection
-  deletion_protection = false
+  deletion_protection = var.rds_deletion_protection
 
-  parameters = [
-    {
-      name = "character_set_client"
-      value = "utf8"
-    },
-    {
-      name = "character_set_server"
-      value = "utf8"
-    }
-  ]
+  # Define if creates a parameter group
+  create_db_parameter_group = var.rds_create_db_parameter_group
 }
 
 resource "random_password" "rds_password" {
