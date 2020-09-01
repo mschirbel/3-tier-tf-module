@@ -62,7 +62,6 @@ func TestTerraformAwsNetwork(t *testing.T) {
 
 	// Test 2: Verify if the network that is supposed to be private is really private
 	for i := 0; i < len(arrayPrivSubnets)-1; i++ {
-		fmt.Printf("Realizando o teste na %s\n", arrayPrivSubnets[i])
 		_, err := aws.IsPublicSubnetE(t, arrayPrivSubnets[i], awsRegion)
 		if err != nil {
 			fmt.Printf("Error Encountered: %s", err)
@@ -73,7 +72,6 @@ func TestTerraformAwsNetwork(t *testing.T) {
 
 	// Test 3: Verify if the network that is supposed to be public is really public
 	for i := 0; i < len(arrayPublSubnets)-1; i++ {
-		fmt.Printf("Realizando o teste na %s\n", arrayPublSubnets[i])
 		_, err := aws.IsPublicSubnetE(t, arrayPublSubnets[i], awsRegion)
 		if err != nil {
 			fmt.Printf("Error Encountered: %s", err)
