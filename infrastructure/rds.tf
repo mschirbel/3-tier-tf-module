@@ -58,7 +58,7 @@ resource "aws_ssm_parameter" "rds_connection_string" {
   type   = "SecureString"
   value  = jsonencode(
     {
-        "URL"      = module.db.this_db_instance_endpoint,
+        "URL"      = module.db.this_db_instance_address,
         "PORT"     = module.db.this_db_instance_port,
         "DATABASE" = module.db.this_db_instance_name,
         "USER"     = module.db.this_db_instance_username,
