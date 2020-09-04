@@ -10,7 +10,7 @@ resource "aws_resourcegroups_group" "appdemo-ec2" {
   "TagFilters": [
     {
       "Key": "ResourceGroup",
-      "Values": ["appdemo-Test"]
+      "Values": ["${var.tag_name}"]
     }
   ]
 }
