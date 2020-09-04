@@ -40,9 +40,8 @@ func TestTerraformAlb(t *testing.T) {
 
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
-			"database_version": mysqlVersion,
-			"region":           awsRegion,
-			"unique_id":        uniqueID,
+			"region":    awsRegion,
+			"unique_id": uniqueID,
 		},
 	}
 
