@@ -61,18 +61,18 @@ module "example_asg_tags" {
   tag_map = merge(
     local.common_tags,
     {
-      ResourceGroup = "appdemo-Test"
+      ResourceGroup = var.tag_name
     }
   )
 }
 
 resource "aws_key_pair" "appdemo" {
-  key_name   = "appdemo-key"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD3F6tyPEFEzV0LX3X8BsXdMsQz1x2cEikKDEY0aIj41qgxMCP/iteneqXSIFZBp5vizPvaoIR3Um9xK7PGoW8giupGn+EPuxIA4cDM4vzOqOkiMPhz5XK0whEjkVzTo4+S0puvDZuwIsdiW9mxhJc7tgBNL0cYlWSYVkz4G/fslNfRPW5mYAM49f4fhtxPb5ok4Q2Lg9dPKVHO/Bgeu5woMc7RY0p1ej6D4CKFE6lymSDJpW0YHX/wqE9+cfEauh7xZcG0q9t2ta6F6fmX0agvpFyZo8aFbXeUBr7osSCJNgvavWbM/06niWrOvYX2xwWdhXmXSrbX8ZbabVohBK41 email@example.com"
+  key_name   = join("-", [var.tag_name, "key"])
+  public_key = var.ssh_rsa
 }
 
 data "template_file" "user_data" {
-  template = file("userdata.tpl")
+  template = file("./scripts/userdata.tpl")
   vars = {
     rds_username = module.db.this_db_instance_username,
     rds_endpoint = element(split(":", module.db.this_db_instance_endpoint), 0)
@@ -80,4 +80,18 @@ data "template_file" "user_data" {
     rds_password = random_password.rds_password.result,
     unique_id    = var.unique_id
   }
+}
+
+# with bash, it would not work on Windows.
+# maybe should try something in Python
+# https://pypi.org/project/terraform-external-data/
+# and https://paulbrice.com/terraform/python/2017/12/18/external-provider-terraform.html
+data "external" "instance_id" {
+  program = ["bash", "${path.root}/scripts/getInstanceIDFromAsg.sh"] # bash program that returns json for Linux
+  # program = ["python", "${path.root}/scripts/getInstanceIDFromAsg.py"] # python program that returns json for Windows/Linux
+  query = {
+    region   = var.region
+    asg_name = module.asg.this_autoscaling_group_name
+  }
+  depends_on = [module.asg, module.db]
 }
