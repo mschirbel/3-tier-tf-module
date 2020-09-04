@@ -38,7 +38,7 @@ module "db" {
   # Define if creates an option group
   create_db_option_group = var.rds_create_db_option_group # https://github.com/terraform-providers/terraform-provider-aws/issues/4597
   option_group_timeouts = {
-      delete: "60m"
+      delete: "120m"
   }
 
   # Database Deletion Protection
