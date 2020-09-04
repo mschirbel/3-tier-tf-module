@@ -40,14 +40,14 @@ func TestTerraformAwsRDS(t *testing.T) {
 	// Defines which SSM Parameter contains the connection string and get its value
 	key, err := aws.GetParameterE(t, awsRegion, connectionStringParameter)
 	if err != nil {
-		fmt.Printf("Error Encountered in getting AWS Parameter: %s", err)
+		fmt.Printf("Error Encountered in getting AWS Parameter: %s\n", err)
 		return
 	}
 	// Convert the String output to Json
 	connToJSON := []byte(key)
 	var JSONMapConnString map[string]interface{}
 	if err := json.Unmarshal(connToJSON, &JSONMapConnString); err != nil {
-		fmt.Printf("Error Encountered in Unmarshal: %s", err)
+		fmt.Printf("Error Encountered in Unmarshal: %s\n", err)
 		return
 	}
 
@@ -60,17 +60,17 @@ func TestTerraformAwsRDS(t *testing.T) {
 	// Define values to test
 	address, err := aws.GetAddressOfRdsInstanceE(t, RDSInstanceID, awsRegion)
 	if err != nil {
-		fmt.Printf("Error Encountered in getting RDS Address: %s", err)
+		fmt.Printf("Error Encountered in getting RDS Address: %s\n", err)
 		return
 	}
 	port, err := aws.GetPortOfRdsInstanceE(t, RDSInstanceID, awsRegion)
 	if err != nil {
-		fmt.Printf("Error Encountered in getting RDS Port: %s", err)
+		fmt.Printf("Error Encountered in getting RDS Port: %s\n", err)
 		return
 	}
 	schemaExistsInRdsInstance, err := aws.GetWhetherSchemaExistsInRdsMySqlInstanceE(t, address, port, username, password, expectedDatabaseName)
 	if err != nil {
-		fmt.Printf("Error Encountered in getting RDS Schema: %s", err)
+		fmt.Printf("Error Encountered in getting RDS Schema: %s\n", err)
 		return
 	}
 
