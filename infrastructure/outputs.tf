@@ -21,3 +21,7 @@ output rds_id {
 output rds_connection_string_parameter {
     value = aws_ssm_parameter.rds_connection_string.name
 }
+
+output instances_ip {
+    value = data.external.instance_id.result.instances_id
+}
