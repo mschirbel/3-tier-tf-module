@@ -52,8 +52,9 @@ func TestTerraformAlb(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	// Run `terraform output` to get the value of an output variable
-	// Formats the alb dns to match HTTP request valid url
 	albDNS := terraform.Output(t, terraformOptions, "alb-dns")
+
+	// Formats the alb dns to match HTTP request valid url
 	URL := fmt.Sprintf("http://%s:80", albDNS)
 
 	// It can take a minute or so for the Instance to boot up, so retry a few times
