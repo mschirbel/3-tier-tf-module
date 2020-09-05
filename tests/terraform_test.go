@@ -16,6 +16,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+const savedAwsRegion = "AwsRegion"
+
 func TestTerraformModules(t *testing.T) {
 	t.Parallel()
 
@@ -36,7 +38,7 @@ func TestTerraformModules(t *testing.T) {
 
 	// Stage to Deploy Terraform
 	test_structure.RunTestStage(t, "deploy", func() {
-		awsRegion := test_structure.LoadString(t, workingDir, "awsRegion")
+		test_structure.SaveString(t, workingDir, savedAwsRegion, awsRegion)
 		deployUsingTerraform(t, awsRegion, workingDir, uniqueID)
 	})
 
@@ -118,7 +120,7 @@ func validateVpc(t *testing.T, workingDir string, awsRegion string) {
 	for i := 0; i < len(arrayPrivSubnets)-1; i++ {
 		_, err := aws.IsPublicSubnetE(t, arrayPrivSubnets[i], awsRegion)
 		if err != nil {
-			fmt.Printf("Error Encountered: %s", err)
+			fmt.Printf("Error Encountered in Private Subnet: %s", err)
 			return
 		}
 		assert.False(t, aws.IsPublicSubnet(t, arrayPrivSubnets[i], awsRegion))
@@ -128,7 +130,7 @@ func validateVpc(t *testing.T, workingDir string, awsRegion string) {
 	for i := 0; i < len(arrayPublSubnets)-1; i++ {
 		_, err := aws.IsPublicSubnetE(t, arrayPublSubnets[i], awsRegion)
 		if err != nil {
-			fmt.Printf("Error Encountered: %s", err)
+			fmt.Printf("Error Encountered in Public Subnet: %s", err)
 			return
 		}
 		assert.True(t, aws.IsPublicSubnet(t, arrayPublSubnets[i], awsRegion))
@@ -263,5 +265,6 @@ func validateAlb(t *testing.T, workingDir string, awsRegion string, uniqueID str
 	timeBetweenRetries := 10 * time.Second
 
 	// Verify that we get back a 200 OK with the expected expectedResult
+	fmt.Println("Starting ALB Testing")
 	http_helper.HttpGetWithRetry(t, URL, nil, 200, string(expectedResult), maxRetries, timeBetweenRetries)
 }
