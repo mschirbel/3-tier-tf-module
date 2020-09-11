@@ -32,7 +32,7 @@ module "asg" {
 
   # Auto scaling group
   asg_name                  = join("-", [var.tag_name, "asg"])
-  vpc_zone_identifier       = module.vpc.public_subnets
+  vpc_zone_identifier       = module.vpc.private_subnets
   health_check_type         = "EC2"
   min_size                  = var.asg_min_intances
   max_size                  = var.asg_max_intances
