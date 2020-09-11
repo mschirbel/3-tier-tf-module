@@ -1,6 +1,6 @@
 This project will follow this architecture design:
 
-![](media/architecture.png)
+![](media/3_tier_web_module.png)
 
 With this in mind, this project has the intention of doing the following:
 
