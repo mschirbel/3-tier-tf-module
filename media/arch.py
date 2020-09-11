@@ -23,7 +23,7 @@ with Diagram("3 Tier Web Module", show=False):
                     database = RDS("app_db")
                 natgw = NATGateway("NATGW")
 
-    users >> internet >> igw >> lb >> auto_scaling_group
+    users >> internet >> lb >> auto_scaling_group
     natgw - auto_scaling_group
     auto_scaling_group - Edge(style="dotted") - database
     ssm >> Cluster("subnet/private")
