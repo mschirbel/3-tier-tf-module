@@ -54,22 +54,22 @@ func TestTerraformAwsNetwork(t *testing.T) {
 
 	// Test 2: Verify if the network that is supposed to be private is really private
 	for i := 0; i < len(arrayPrivSubnets)-1; i++ {
-		isPublic, err := aws.IsPublicSubnetE(t, arrayPrivSubnets[i], awsRegion)
+		isPrivate, err := aws.IsPublicSubnetE(t, arrayPrivSubnets[i], awsRegion)
 		if err != nil {
 			fmt.Printf("Error Encountered: %s", err)
 			return
 		}
-		assert.False(t, isPublic)
+		assert.False(t, isPrivate)
 	}
 
 	// Test 3: Verify if the network that is supposed to be public is really public
 	for i := 0; i < len(arrayPublSubnets)-1; i++ {
-		isPrivate, err := aws.IsPublicSubnetE(t, arrayPublSubnets[i], awsRegion)
+		isPublic, err := aws.IsPublicSubnetE(t, arrayPublSubnets[i], awsRegion)
 		if err != nil {
 			fmt.Printf("Error Encountered: %s", err)
 			return
 		}
-		assert.True(t, isPrivate)
+		assert.True(t, isPublic)
 	}
 
 }
