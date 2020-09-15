@@ -55,7 +55,7 @@ data "aws_ami" "amazon-linux-2" {
     }
 }
 
-module "example_asg_tags" {
+module "asg_tags" {
   source  = "rhythmictech/asg-tag-transform/aws"
   version = "1.0.0"
   tag_map = merge(
