@@ -13,26 +13,15 @@ import (
 )
 
 func TestTerraformAlb(t *testing.T) {
+
+	// tests running in parallel
 	t.Parallel()
 
 	// A unique ID we can use to namespace resources so we don't clash with anything already in the AWS account or
-	// tests running in parallel
 	uniqueID := random.UniqueId()
-
-	// Defines the MySQL Version in the test
-	mysqlVersion := fmt.Sprintf("5.7.19")
 
 	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
 	awsRegion := aws.GetRandomStableRegion(t, nil, nil)
-
-	// Expected Result from the HTTP Request in the ALB
-	httpJSON := map[string]interface{}{
-		"database_version": fmt.Sprintf("%s-log", mysqlVersion),
-		"region":           awsRegion,
-		"unique_id":        uniqueID,
-	}
-	// Format the Expected Result to JSON
-	expectedResult, _ := json.Marshal(httpJSON)
 
 	terraformOptions := &terraform.Options{
 		// The path to where our Terraform code is located
@@ -53,6 +42,18 @@ func TestTerraformAlb(t *testing.T) {
 
 	// Run `terraform output` to get the value of an output variable
 	albDNS := terraform.Output(t, terraformOptions, "alb-dns")
+
+	// Defines the MySQL Version in the test
+	mysqlVersion := fmt.Sprintf("5.7.19")
+
+	// Expected Result from the HTTP Request in the ALB
+	httpJSON := map[string]interface{}{
+		"database_version": fmt.Sprintf("%s-log", mysqlVersion),
+		"region":           awsRegion,
+		"unique_id":        uniqueID,
+	}
+	// Format the Expected Result to JSON
+	expectedResult, _ := json.Marshal(httpJSON)
 
 	// Formats the alb dns to match HTTP request valid url
 	URL := fmt.Sprintf("http://%s:80", albDNS)
